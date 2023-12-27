@@ -86,39 +86,6 @@ android {
     }
 }
 
-tasks.register("printDeps", org.gradle.api.tasks.diagnostics.DependencyReportTask::class) {
-    configurations = project.buildscript.configurations + project.configurations
-}
+libres {
 
-tasks.register<Copy>("copyLibresBundles") {
-    from("../library/build/generated/libres/apple") {
-        include("libres-bundles/**")
-    }
-    into("$buildDir/generated/libres/apple")
-    includeEmptyDirs = true
 }
-
-tasks.register("updatePodspecFile") {
-    val filePath = "$projectDir/app.podspec"
-    val fileContent = File(filePath).readText()
-    val updatedContent = fileContent.replace(
-        "spec.resources = ['build/generated/libres/apple/libres-bundles']",
-        "spec.resources = ['../library/build/generated/libres/apple/libres-bundles']"
-    )
-    File(filePath).writeText(updatedContent)
-}
-
-tasks.withType<DependencyReportTask>().configureEach {
-    this.taskConfigurations.forEach {
-        println("configurations: ${it.name}")
-    }
-    println("DependencyReportTask: $name")
-    if (name == "libresSetupPodspecExports") {
-        finalizedBy("copyLibresBundles")
-//        finalizedBy("updatePodspecFile")
-    }
-}
-
-//tasks.named("libresSetupPodspecExports") {
-//    finalizedBy("copyLibresBundles")
-//}
