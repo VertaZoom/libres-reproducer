@@ -1,0 +1,19 @@
+platform :ios, '12.0'
+
+target 'iosApp' do
+  use_frameworks!
+  platform :ios, '12.0'
+  pod 'app', :path => '../app'
+end
+
+pre_install do |installer|
+  FileUtils.mkdir_p(installer.sandbox.root.to_s + '/../../library/build/generated/libres/apple/libres-bundles')
+end
+
+post_install do |installer|
+ installer.pods_project.targets.each do |target|
+  target.build_configurations.each do |config|
+   config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+  end
+ end
+end
